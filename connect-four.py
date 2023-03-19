@@ -6,9 +6,9 @@ import numpy as np
 # check when to end game
 # check that location is valid and empty
 
-def userInputDimBoard(dimension, inputLine):
+def getPosNumUserInput(dimension, inputLine, errorLine, numsToAvoid):
     """
-    Function that retreives a board dimension from the user.
+    Function that retreives a positive number input from the user greater than or equal to 4.
     """
     valueDim = 0
     valid = False
@@ -16,21 +16,19 @@ def userInputDimBoard(dimension, inputLine):
     while (valid is  False):
         try:
             valueDim=int(input(inputLine))
-            if valueDim < 4 and valueDim != 0:
+            if valueDim < 4 or (valueDim in numsToAvoid):
                 raise ValueError
             else:
                 valid = True
-                print(f'You entered {valueDim} {dimension}.')
+                print(f'You entered {valueDim} for {dimension}.')
         except ValueError:
-            print("This is not a whole number greater than or equal to 4. Enter 0 to quit: ")
+            print(errorLine)
     return valueDim
 
 def userInputColor(userNum, invalidChar):
-
     print(f'Hello, user {userNum}. What is the 1st letter of your favourite color?')
     valid = False
     favColor = ""
-
     while (valid is False):
         try:
             favColor = input("Enter the 1st letter of your favourite colour. Enter 0 to quit: ")
@@ -44,21 +42,36 @@ def userInputColor(userNum, invalidChar):
     return favColor
 
 class ConnectFourBoard:
-    def __init__(self, dimRows, dimCols):
+    def __init__(self, dimRows, dimCols, colUser1, colUser2):
         self.board = np.full((dimRows, dimCols), 'O')
+        self.dimRows = dimRows
+        self.dimCols = dimCols
+        self.colUser1 = colUser1
+        self.colUser2 = colUser2
     def getBoard(self):
         return self.board
     def printBoard(self):
         print(self.board)
+    def getLocation(self):
+        pass
+    def updateBoard(self):
+        pass
+    def playGame(self):
+        stop = False
+        while stop == False:
+            locationUser1 = self.getLocation()
+            self.updateBoard(locationUser1)
+            locationUser2 = self.getLocation()
+            self.updateBoard(locationUser2)
 
 
 inputLine = "Enter a number greater than or equal to 4. Enter 0 to quit:"
-valueRows = userInputDimBoard("rows", inputLine)
-valueCols = userInputDimBoard("columns", inputLine)
-connectFourBoard = ConnectFourBoard(valueRows, valueCols)
-print(connectFourBoard.getBoard())
+valueRows = getPosNumUserInput("rows", inputLine, "error", [])
+valueCols = getPosNumUserInput("columns", inputLine, "error", [])
 charUser1 = userInputColor(1, ['O'])
 charUser2 = userInputColor(2, ['O', charUser1])
+connectFourBoard = ConnectFourBoard(valueRows, valueCols, charUser1, charUser2)
+print(connectFourBoard.getBoard())
 
 
 # def getLocation (dimension):
