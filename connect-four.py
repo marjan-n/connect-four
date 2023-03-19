@@ -5,6 +5,7 @@ import numpy as np
 # ascii check that it's a character
 # check when to end game
 # check that location is valid and empty
+# this is not connect-four
 
 def getPosNumUserInput(dimension, inputLine, errorLine, numsToAvoid):
     """
@@ -49,12 +50,25 @@ class ConnectFourBoard:
         if row != 0:
             col = getPosNumUserInput("col", "what col?", "error", [])
         return (row, col)
+    def checkIfWinner(self, colUser):
+        # check vertically
+        for col in range(self.dimCols):
+            sum = 0
+            unique, counts = np.unique(self.board[:, col], return_counts=True)
+            dictTemp = dict(zip(unique, counts))
+            if colUser in dictTemp.keys():
+                sum = dictTemp[colUser]
+        if sum == 4:
+            return True
+        else:
+            return False
     def updateBoard(self, locationUser, colUser):
         row = locationUser[0]
         col = locationUser[1]
         endGame = False
         if row != 0 and col != 0:
             self.board[row-1][col-1] = colUser
+            self.checkIfWinner(colUser)
         else:
             endGame = True
         self.printBoard()
