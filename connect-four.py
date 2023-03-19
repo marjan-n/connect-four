@@ -3,8 +3,10 @@ import numpy as np
 
 # 0 to quit case 
 # ascii check that it's a character
+# check when to end game
+# check that location is valid and empty
 
-def userInputDimBoard(dimension):
+def userInputDimBoard(dimension, inputLine):
     """
     Function that retreives a board dimension from the user.
     """
@@ -13,7 +15,7 @@ def userInputDimBoard(dimension):
     print(f'Getting the number of {dimension}!')
     while (valid is  False):
         try:
-            valueDim=int(input("Enter a number greater than or equal to 4. Enter 0 to quit: "))
+            valueDim=int(input(inputLine))
             if valueDim < 4 and valueDim != 0:
                 raise ValueError
             else:
@@ -41,21 +43,26 @@ def userInputColor(userNum, invalidChar):
             print(f'{favColor} is an invalid input. Please try again.')
     return favColor
 
-
-
 class ConnectFourBoard:
     def __init__(self, dimRows, dimCols):
         self.board = np.full((dimRows, dimCols), 'O')
     def getBoard(self):
         return self.board
+    def printBoard(self):
+        print(self.board)
 
 
-valueRows = userInputDimBoard("rows")
-valueCols = userInputDimBoard("columns")
+inputLine = "Enter a number greater than or equal to 4. Enter 0 to quit:"
+valueRows = userInputDimBoard("rows", inputLine)
+valueCols = userInputDimBoard("columns", inputLine)
 connectFourBoard = ConnectFourBoard(valueRows, valueCols)
 print(connectFourBoard.getBoard())
 charUser1 = userInputColor(1, ['O'])
 charUser2 = userInputColor(2, ['O', charUser1])
+
+
+# def getLocation (dimension):
+
 
 
 
