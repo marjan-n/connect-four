@@ -80,12 +80,45 @@ class ConnectFourBoard:
                     return True
         return False     
     
+    def checkIfWinnerLeftToRight(self, colUser):
+        colUser = 'e'
+        # below the diagonal
+        for i in range(self.dimRows):
+            sum = 0
+            row = i
+            col = 0
+            print(f'starting with row: {i}.')
+            while row != self.dimRows and col != self.dimCols:
+                if self.board[row][col] == colUser:
+                    sum += 1
+                row += 1
+                col += 1
+            if sum == 4:
+                return True
+        # above the diagonal
+        for j in range(1, self.dimCols):
+            row = 0
+            col = j
+            sum = 0
+            while row != self.dimRows and col != self.dimCols:
+                if self.board[row][col] == colUser:
+                    sum += 1
+                row += 1
+                col += 1
+            if sum == 4:
+                return True
+        print(f'helloooo')
+        return False
+
     def checkIfWinner(self, colUser):
         win1 = self.checkIfWinnerVertically(colUser)
         if win1:
             return True
         win2 = self.checkIfWinnerHorizontally(colUser)
         if win2:
+            return True
+        win3 = self.checkIfWinnerLeftToRight(colUser)
+        if win3:
             return True
         return False
     
