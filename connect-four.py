@@ -16,7 +16,7 @@ def getPosNumUserInput(dimension, inputLine, errorLine, numsToAvoid):
     while (valid is  False):
         try:
             valueDim=int(input(inputLine))
-            if valueDim < 4 or (valueDim in numsToAvoid):
+            if (valueDim < 4 or (valueDim in numsToAvoid)) and valueDim != 0 :
                 raise ValueError
             else:
                 valid = True
@@ -25,13 +25,13 @@ def getPosNumUserInput(dimension, inputLine, errorLine, numsToAvoid):
             print(errorLine)
     return valueDim
 
-def userInputColor(userNum, invalidChar):
+def getCharUserInput(userNum, inputLine, errorLine, invalidChar):
     print(f'Hello, user {userNum}. What is the 1st letter of your favourite color?')
     valid = False
     favColor = ""
     while (valid is False):
         try:
-            favColor = input("Enter the 1st letter of your favourite colour. Enter 0 to quit: ")
+            favColor = input(inputLine)
             if len(favColor) > 1 or (favColor in invalidChar):
                 raise ValueError
             else:
@@ -53,25 +53,41 @@ class ConnectFourBoard:
     def printBoard(self):
         print(self.board)
     def getLocation(self):
-        pass
-    def updateBoard(self):
+        stop = False
+        row = 0
+        col = 0
+        row = getPosNumUserInput("row", "what row?", "error", [])
+        if row != 0:
+            col = getPosNumUserInput("col", "what col?", "error", [])
+        return (row, col)
+    def updateBoard(self, locationUser):
         pass
     def playGame(self):
         stop = False
         while stop == False:
+            print(f'\nUser 1!')
             locationUser1 = self.getLocation()
+            if locationUser1 == (0, 0):
+                stop = True
+                continue
             self.updateBoard(locationUser1)
+            print(f'\nUser 2!')
             locationUser2 = self.getLocation()
+            if locationUser2 == (0, 0):
+                stop = True
+                continue
             self.updateBoard(locationUser2)
 
 
 inputLine = "Enter a number greater than or equal to 4. Enter 0 to quit:"
 valueRows = getPosNumUserInput("rows", inputLine, "error", [])
 valueCols = getPosNumUserInput("columns", inputLine, "error", [])
-charUser1 = userInputColor(1, ['O'])
-charUser2 = userInputColor(2, ['O', charUser1])
+charUser1 = getCharUserInput(1, "Enter the 1st letter of your favourite colour. Enter 0 to quit: ", "error char", ['O'])
+charUser2 = getCharUserInput(2, "Enter the 1st letter of your favourite colour. Enter 0 to quit: ", "error char", ['O', charUser1])
 connectFourBoard = ConnectFourBoard(valueRows, valueCols, charUser1, charUser2)
 print(connectFourBoard.getBoard())
+print()
+connectFourBoard.playGame()
 
 
 # def getLocation (dimension):
