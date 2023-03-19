@@ -13,16 +13,8 @@ def getPosNumUserInput(dimension, inputLine, errorLine, numsToAvoid):
     valueDim = 0
     valid = False
     print(f'Getting the number of {dimension}!')
-    while (valid is  False):
-        try:
-            valueDim=int(input(inputLine))
-            if (valueDim < 4 or (valueDim in numsToAvoid)) and valueDim != 0 :
-                raise ValueError
-            else:
-                valid = True
-                print(f'You entered {valueDim} for {dimension}.')
-        except ValueError:
-            print(errorLine)
+    valueDim=int(input(inputLine))        
+    print(f'You entered {valueDim} for {dimension}.')
     return valueDim
 
 def getCharUserInput(userNum, inputLine, errorLine, invalidChar):
@@ -42,12 +34,10 @@ def getCharUserInput(userNum, inputLine, errorLine, invalidChar):
     return favColor
 
 class ConnectFourBoard:
-    def __init__(self, dimRows, dimCols, colUser1, colUser2):
+    def __init__(self, dimRows, dimCols):
         self.board = np.full((dimRows, dimCols), 'O')
         self.dimRows = dimRows
         self.dimCols = dimCols
-        self.colUser1 = colUser1
-        self.colUser2 = colUser2
     def getBoard(self):
         return self.board
     def printBoard(self):
@@ -60,9 +50,12 @@ class ConnectFourBoard:
         if row != 0:
             col = getPosNumUserInput("col", "what col?", "error", [])
         return (row, col)
-    def updateBoard(self, locationUser):
-        pass
-    def playGame(self):
+    def updateBoard(self, locationUser, colUser):
+        row = locationUser[0]
+        col = locationUser[1]
+        self.board[row][col] = colUser
+        self.printBoard()
+    def playGame(self, colUser1, colUser2):
         stop = False
         while stop == False:
             print(f'\nUser 1!')
@@ -70,24 +63,24 @@ class ConnectFourBoard:
             if locationUser1 == (0, 0):
                 stop = True
                 continue
-            self.updateBoard(locationUser1)
+            self.updateBoard(locationUser1, colUser1)
             print(f'\nUser 2!')
             locationUser2 = self.getLocation()
             if locationUser2 == (0, 0):
                 stop = True
                 continue
-            self.updateBoard(locationUser2)
+            self.updateBoard(locationUser2, colUser2)
 
 
 inputLine = "Enter a number greater than or equal to 4. Enter 0 to quit:"
 valueRows = getPosNumUserInput("rows", inputLine, "error", [])
 valueCols = getPosNumUserInput("columns", inputLine, "error", [])
-charUser1 = getCharUserInput(1, "Enter the 1st letter of your favourite colour. Enter 0 to quit: ", "error char", ['O'])
-charUser2 = getCharUserInput(2, "Enter the 1st letter of your favourite colour. Enter 0 to quit: ", "error char", ['O', charUser1])
-connectFourBoard = ConnectFourBoard(valueRows, valueCols, charUser1, charUser2)
+colUser1 = getCharUserInput(1, "Enter the 1st letter of your favourite colour. Enter 0 to quit: ", "error char", ['O'])
+colUser2 = getCharUserInput(2, "Enter the 1st letter of your favourite colour. Enter 0 to quit: ", "error char", ['O', colUser1])
+connectFourBoard = ConnectFourBoard(valueRows, valueCols)
 print(connectFourBoard.getBoard())
 print()
-connectFourBoard.playGame()
+connectFourBoard.playGame(colUser1, colUser2)
 
 
 # def getLocation (dimension):
