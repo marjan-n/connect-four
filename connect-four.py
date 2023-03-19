@@ -39,10 +39,13 @@ class ConnectFourBoard:
         self.board = np.full((dimRows, dimCols), 'O')
         self.dimRows = dimRows
         self.dimCols = dimCols
+
     def getBoard(self):
         return self.board
+    
     def printBoard(self):
         print(self.board)
+
     def getLocation(self):
         stop = False
         row, col = 0, 0
@@ -50,6 +53,7 @@ class ConnectFourBoard:
         if row != 0:
             col = getPosNumUserInput("col", "what col?", "error", [])
         return (row, col)
+    
     def checkIfWinner(self, colUser):
         # check vertically
         for col in range(self.dimCols):
@@ -58,27 +62,33 @@ class ConnectFourBoard:
             dictTemp = dict(zip(unique, counts))
             if colUser in dictTemp.keys():
                 sum = dictTemp[colUser]
-        if sum == 4:
-            return True
-        else:
-            return False
+                print(dictTemp[colUser])
+                if sum == 4:
+                    return True
+        return False
+    
     def updateBoard(self, locationUser, colUser):
         row = locationUser[0]
         col = locationUser[1]
-        endGame = False
+        win = False
+        # check if user wants to end game
         if row != 0 and col != 0:
             self.board[row-1][col-1] = colUser
-            self.checkIfWinner(colUser)
-        else:
-            endGame = True
-        self.printBoard()
-        return endGame
+            win = self.checkIfWinner(colUser)
+            self.printBoard()
+        # check if game was won
+        if win:
+            return True
+        return False
+    
     def playGame(self, colUser1, colUser2):
         endGame = False
         while endGame == False:
             print(f'\nUser 1!')
             locationUser1 = self.getLocation()
             endGame = self.updateBoard(locationUser1, colUser1)
+            if endGame:
+                continue
             print(f'\nUser 2!')
             locationUser2 = self.getLocation()
             endGame = self.updateBoard(locationUser2, colUser2)
