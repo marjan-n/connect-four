@@ -21,5 +21,18 @@ def userInputDimBoard(dimension):
                 print(f'You entered {valueDim} {dimension}.')
         except ValueError:
             print("This is not a whole number greater than or equal to 4. Enter 0 to quit.")
+    return valueDim
 
-userInputDimBoard("rows")
+class ConnectFourBoard:
+
+    def __init__(self, dimRows, dimCols):
+        self.board = np.zeros((dimRows, dimCols))
+    
+    def getBoard(self):
+        return self.board
+    
+valueRows = userInputDimBoard("rows")
+valueCols = userInputDimBoard("columns")
+connectFourBoard = ConnectFourBoard(valueRows, valueCols)
+print(connectFourBoard.getBoard())
+
