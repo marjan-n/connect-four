@@ -44,8 +44,7 @@ class ConnectFourBoard:
         print(self.board)
     def getLocation(self):
         stop = False
-        row = 0
-        col = 0
+        row, col = 0, 0
         row = getPosNumUserInput("row", "what row?", "error", [])
         if row != 0:
             col = getPosNumUserInput("col", "what col?", "error", [])
@@ -53,24 +52,22 @@ class ConnectFourBoard:
     def updateBoard(self, locationUser, colUser):
         row = locationUser[0]
         col = locationUser[1]
-        self.board[row][col] = colUser
+        endGame = False
+        if row != 0 and col != 0:
+            self.board[row-1][col-1] = colUser
+        else:
+            endGame = True
         self.printBoard()
+        return endGame
     def playGame(self, colUser1, colUser2):
-        stop = False
-        while stop == False:
+        endGame = False
+        while endGame == False:
             print(f'\nUser 1!')
             locationUser1 = self.getLocation()
-            if locationUser1 == (0, 0):
-                stop = True
-                continue
-            self.updateBoard(locationUser1, colUser1)
+            endGame = self.updateBoard(locationUser1, colUser1)
             print(f'\nUser 2!')
             locationUser2 = self.getLocation()
-            if locationUser2 == (0, 0):
-                stop = True
-                continue
-            self.updateBoard(locationUser2, colUser2)
-
+            endGame = self.updateBoard(locationUser2, colUser2)
 
 inputLine = "Enter a number greater than or equal to 4. Enter 0 to quit:"
 valueRows = getPosNumUserInput("rows", inputLine, "error", [])
