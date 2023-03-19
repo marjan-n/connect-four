@@ -54,7 +54,7 @@ class ConnectFourBoard:
             col = getPosNumUserInput("col", "what col?", "error", [])
         return (row, col)
     
-    def checkIfWinner(self, colUser):
+    def checkIfWinnerVertically(self, colUser):
         # check vertically
         for col in range(self.dimCols):
             sum = 0
@@ -65,6 +65,28 @@ class ConnectFourBoard:
                 print(dictTemp[colUser])
                 if sum == 4:
                     return True
+        return False
+    
+    def checkIfWinnerHorizontally(self, colUser):
+        # check horizontally
+        for row in range(self.dimRows):
+            sum = 0
+            unique, counts = np.unique(self.board[row, :], return_counts=True)
+            dictTemp = dict(zip(unique, counts))
+            if colUser in dictTemp.keys():
+                sum = dictTemp[colUser]
+                print(dictTemp[colUser])
+                if sum == 4:
+                    return True
+        return False     
+    
+    def checkIfWinner(self, colUser):
+        win1 = self.checkIfWinnerVertically(colUser)
+        if win1:
+            return True
+        win2 = self.checkIfWinnerHorizontally(colUser)
+        if win2:
+            return True
         return False
     
     def updateBoard(self, locationUser, colUser):
