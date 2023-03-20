@@ -5,6 +5,7 @@ import numpy as np
 # ascii check that it's a character
 # check when to end game
 # check that location is valid and empty
+# this is not connect-four
 
 def getPosNumUserInput(dimension, inputLine, errorLine, numsToAvoid):
     """
@@ -38,10 +39,13 @@ class ConnectFourBoard:
         self.board = np.full((dimRows, dimCols), 'O')
         self.dimRows = dimRows
         self.dimCols = dimCols
+
     def getBoard(self):
         return self.board
+    
     def printBoard(self):
         print(self.board)
+
     def getLocation(self):
         stop = False
         row, col = 0, 0
@@ -49,22 +53,118 @@ class ConnectFourBoard:
         if row != 0:
             col = getPosNumUserInput("col", "what col?", "error", [])
         return (row, col)
+    
+    def checkIfWinnerVertically(self, colUser):
+        # check vertically
+        for col in range(self.dimCols):
+            sum = 0
+            unique, counts = np.unique(self.board[:, col], return_counts=True)
+            dictTemp = dict(zip(unique, counts))
+            if colUser in dictTemp.keys():
+                sum = dictTemp[colUser]
+                print(dictTemp[colUser])
+                if sum == 4:
+                    return True
+        return False
+    
+    def checkIfWinnerHorizontally(self, colUser):
+        # check horizontally
+        for row in range(self.dimRows):
+            sum = 0
+            unique, counts = np.unique(self.board[row, :], return_counts=True)
+            dictTemp = dict(zip(unique, counts))
+            if colUser in dictTemp.keys():
+                sum = dictTemp[colUser]
+                print(dictTemp[colUser])
+                if sum == 4:
+                    return True
+        return False     
+    
+    def checkIfWinnerRowIncColInc(self, colUser):
+        # below the diagonal
+        for i in range(self.dimRows):
+            sum, row, col = 0, i, 0
+            print(f'starting with row: {i}.')
+            while row != self.dimRows and col != self.dimCols:
+                if self.board[row][col] == colUser:
+                    sum += 1
+                row += 1
+                col += 1
+            if sum == 4:
+                return True
+            
+        # above the diagonal
+        for j in range(1, self.dimCols):
+            row, col, sum = 0, j, 0
+            while row != self.dimRows and col != self.dimCols:
+                if self.board[row][col] == colUser:
+                    sum += 1
+                row += 1
+                col += 1
+            if sum == 4:
+                return True
+        return False
+
+    def checkIfWinnerRowDecColInc(self, colUser):
+        # below the diagonal
+        for j in range(self.dimCols):
+            sum, row, col = 0, self.dimRows - 1, j
+            while row >=0 and col != self.dimCols:
+                if self.board[row][col] == colUser:
+                    sum += 1
+                row -= 1
+                col += 1
+            if sum == 4:
+                return True
+        # above the diagonal
+        for i in range(self.dimRows):
+            sum, row, col = 0, i, 0
+            while row >=0 and col != self.dimCols:
+                if self.board[row][col] == colUser:
+                    sum += 1
+                row -= 1
+                col += 1
+            if sum == 3:
+                return True        
+
+
+    def checkIfWinner(self, colUser):
+        win1 = self.checkIfWinnerVertically(colUser)
+        if win1:
+            return True
+        win2 = self.checkIfWinnerHorizontally(colUser)
+        if win2:
+            return True
+        win3 = self.checkIfWinnerRowIncColInc(colUser)
+        if win3:
+            return True
+        win4 = self.checkIfWinnerRowDecColInc(colUser)
+        if win4:
+            return True
+        return False
+    
     def updateBoard(self, locationUser, colUser):
         row = locationUser[0]
         col = locationUser[1]
-        endGame = False
+        win = False
+        # check if user wants to end game
         if row != 0 and col != 0:
             self.board[row-1][col-1] = colUser
-        else:
-            endGame = True
-        self.printBoard()
-        return endGame
+            win = self.checkIfWinner(colUser)
+            self.printBoard()
+        # check if game was won
+        if win:
+            return True
+        return False
+    
     def playGame(self, colUser1, colUser2):
         endGame = False
         while endGame == False:
             print(f'\nUser 1!')
             locationUser1 = self.getLocation()
             endGame = self.updateBoard(locationUser1, colUser1)
+            if endGame:
+                continue
             print(f'\nUser 2!')
             locationUser2 = self.getLocation()
             endGame = self.updateBoard(locationUser2, colUser2)
