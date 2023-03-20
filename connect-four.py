@@ -80,13 +80,10 @@ class ConnectFourBoard:
                     return True
         return False     
     
-    def checkIfWinnerLeftToRight(self, colUser):
-        colUser = 'e'
+    def checkIfWinnerRowIncColInc(self, colUser):
         # below the diagonal
         for i in range(self.dimRows):
-            sum = 0
-            row = i
-            col = 0
+            sum, row, col = 0, i, 0
             print(f'starting with row: {i}.')
             while row != self.dimRows and col != self.dimCols:
                 if self.board[row][col] == colUser:
@@ -95,11 +92,10 @@ class ConnectFourBoard:
                 col += 1
             if sum == 4:
                 return True
+            
         # above the diagonal
         for j in range(1, self.dimCols):
-            row = 0
-            col = j
-            sum = 0
+            row, col, sum = 0, j, 0
             while row != self.dimRows and col != self.dimCols:
                 if self.board[row][col] == colUser:
                     sum += 1
@@ -107,8 +103,30 @@ class ConnectFourBoard:
                 col += 1
             if sum == 4:
                 return True
-        print(f'helloooo')
         return False
+
+    def checkIfWinnerRowDecColInc(self, colUser):
+        # below the diagonal
+        for j in range(self.dimCols):
+            sum, row, col = 0, self.dimRows - 1, j
+            while row >=0 and col != self.dimCols:
+                if self.board[row][col] == colUser:
+                    sum += 1
+                row -= 1
+                col += 1
+            if sum == 4:
+                return True
+        # above the diagonal
+        for i in range(self.dimRows):
+            sum, row, col = 0, i, 0
+            while row >=0 and col != self.dimCols:
+                if self.board[row][col] == colUser:
+                    sum += 1
+                row -= 1
+                col += 1
+            if sum == 3:
+                return True        
+
 
     def checkIfWinner(self, colUser):
         win1 = self.checkIfWinnerVertically(colUser)
@@ -117,8 +135,11 @@ class ConnectFourBoard:
         win2 = self.checkIfWinnerHorizontally(colUser)
         if win2:
             return True
-        win3 = self.checkIfWinnerLeftToRight(colUser)
+        win3 = self.checkIfWinnerRowIncColInc(colUser)
         if win3:
+            return True
+        win4 = self.checkIfWinnerRowDecColInc(colUser)
+        if win4:
             return True
         return False
     
